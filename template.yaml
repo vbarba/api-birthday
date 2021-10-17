@@ -1,0 +1,90 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  This is a SAM template for api-birthday which is a Serverless API for 
+  storing users and birhdays and say hello to them.
+
+Globals:
+  Function:
+    Timeout: 10
+
+Parameters:
+  ExecEnv:
+    Type: String
+    AllowedValues:
+      - local
+      - dev
+      - stage
+      - prod
+    Default: prod
+  ApiBirthdayTableName:
+    Type: String
+    Default: api-birthday
+
+Resources:
+  ApiBirthdayFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api-birthday/
+      Handler: app.app
+      Runtime: python3.9
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref ApiBirthdayTableName
+          REGION_NAME: !Ref AWS::Region
+          EXEC_ENV: !Ref ExecEnv
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ApiBirthdayTable
+      Events:
+        CreateBirthday:
+          Type: Api
+          Properties:
+            Path: /hello/{username}
+            Method: put
+        GetHello:
+          Type: Api
+          Properties:
+            Path: /hello/{username}
+            Method: get
+        # FetchList:
+        #   Type: Api
+        #   Properties:
+        #     Path: /hello/{id}
+        #     Method: get
+        # UpdateList:
+        #   Type: Api
+        #   Properties:
+        #     Path: /hello/{id}
+        #     Method: put
+        # DeleteList:
+        #   Type: Api
+        #   Properties:
+        #     Path: /hello/{id}
+        #     Method: delete
+
+  ApiBirthdayTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref ApiBirthdayTableName
+      AttributeDefinitions:
+        - AttributeName: username
+          AttributeType: S
+      KeySchema:
+        - AttributeName: username
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
+
+Outputs:
+  ApiBirthdayApi:
+    Description: "API Gateway endpoint URL for Prod stage for Api Birthday function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello"
+  ApiBirthdayFunction:
+    Description: "Api Birthday Lambda Function ARN"
+    Value: !GetAtt ApiBirthdayFunction.Arn
+  ApiBirthdayFunctionIamRole:
+    Description: "Implicit IAM Role created for Api Birthday function"
+    Value: !GetAtt ApiBirthdayFunctionRole.Arn
