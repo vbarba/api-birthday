@@ -17,9 +17,6 @@ Parameters:
       - stage
       - prod
     Default: prod
-  ApiBirthdayTableName:
-    Type: String
-    Default: api-birthday
 
 Resources:
   ApiBirthdayFunction:
@@ -30,7 +27,7 @@ Resources:
       Runtime: python3.9
       Environment:
         Variables:
-          TABLE_NAME: !Ref ApiBirthdayTableName
+          TABLE_NAME: !Sub ${AWS::StackName}
           REGION_NAME: !Ref AWS::Region
           EXEC_ENV: !Ref ExecEnv
       Policies:
@@ -47,26 +44,11 @@ Resources:
           Properties:
             Path: /hello/{username}
             Method: get
-        # FetchList:
-        #   Type: Api
-        #   Properties:
-        #     Path: /hello/{id}
-        #     Method: get
-        # UpdateList:
-        #   Type: Api
-        #   Properties:
-        #     Path: /hello/{id}
-        #     Method: put
-        # DeleteList:
-        #   Type: Api
-        #   Properties:
-        #     Path: /hello/{id}
-        #     Method: delete
 
   ApiBirthdayTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Ref ApiBirthdayTableName
+      TableName: !Sub ${AWS::StackName}
       AttributeDefinitions:
         - AttributeName: username
           AttributeType: S
