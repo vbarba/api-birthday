@@ -2,8 +2,10 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: 3.8
+      python: 3.9
   build:
     commands:
       # trigger the unit tests here
       - echo 'Running unit tests'
+      - docker run -d -p 8000:8000 amazon/dynamodb-local
+      - EXEC_ENV="local" REGION_NAME="local" TABLE_NAME="local" python3 -m pytest tests/unit -v

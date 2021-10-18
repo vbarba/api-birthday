@@ -22,7 +22,7 @@ Resources:
   ApiBirthdayFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: api-birthday/
+      CodeUri: api_birthday/
       Handler: app.app
       Runtime: python3.9
       Environment:
