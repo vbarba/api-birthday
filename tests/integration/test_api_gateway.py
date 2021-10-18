@@ -47,13 +47,12 @@ class TestApiGateway(TestCase):
         self.api_endpoint = api_outputs[0]["OutputValue"]
 
     def test_api_gateway_put(self):
-        """
-        Call the API Gateway endpoint and check the response
-        """
         tomorrow = datetime.now()+ timedelta(days=-1)
         response_put = requests.put(self.api_endpoint+'/testuser', data=json.dumps({"dateOfBirth": tomorrow.strftime('%Y-%m-%d')}), headers={"Content-Type": "application/json"})
         self.assertEqual(response_put.status_code, 200)
 
     def test_api_gateway_get(self):
         response_get = requests.get(self.api_endpoint+'/testuser')
+        print(response_get)
+        print(response_get.json())
         self.assertDictEqual(response_get.json(), {"message": "Hello, testuser! Your birthday is in 364 day(s)"})
