@@ -11,6 +11,11 @@ phases:
       # trigger the unit tests here
       - echo 'Running unit tests'
       - docker run -d -p 8000:8000 amazon/dynamodb-local
+      - aws dynamodb create-table --table-name local \
+        --attribute-definitions AttributeName=username,AttributeType=S \
+        --key-schema AttributeName=username,KeyType=HASH \
+        --provisioned-throughput ReadCapacityUnits=2,WriteCapacityUnits=2 \
+        --endpoint-url=http://127.0.0.1:8000
       - pip install --no-cache-dir -r api_birthday/requirements.txt
       - pip install --no-cache-dir -r tests/requirements.txt
       - EXEC_ENV="local" REGION_NAME="local" TABLE_NAME="local" python3 -m pytest tests/unit -v
