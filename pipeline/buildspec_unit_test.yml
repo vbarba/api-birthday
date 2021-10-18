@@ -11,7 +11,8 @@ phases:
       # trigger the unit tests here
       - echo 'Running unit tests'
       - docker run -d -p 8000:8000 amazon/dynamodb-local
-      - aws dynamodb create-table --table-name local \
+      - |
+        aws dynamodb create-table --table-name local \
         --attribute-definitions AttributeName=username,AttributeType=S \
         --key-schema AttributeName=username,KeyType=HASH \
         --provisioned-throughput ReadCapacityUnits=2,WriteCapacityUnits=2 \
