@@ -52,7 +52,7 @@ class TestApiGateway(TestCase):
         self.assertEqual(response_put.status_code, 200)
 
     def test_api_gateway_get(self):
-        response_get = requests.get(self.api_endpoint+'/testuser')
+        response_get = requests.get(self.api_endpoint+'/testuser', headers={"Content-Type": "application/json"})
         print(response_get)
         print(response_get.json())
         self.assertDictEqual(response_get.json(), {"message": "Hello, testuser! Your birthday is in 364 day(s)"})
