@@ -12,5 +12,5 @@ phases:
       - echo 'Running unit tests'
       - docker run -d -p 8000:8000 amazon/dynamodb-local
       - pip install --no-cache-dir -r api_birthday/requirements.txt
-      - pip install --no-cache-dir -r test/requirements.txt
+      - pip install --no-cache-dir -r tests/requirements.txt
       - EXEC_ENV="local" REGION_NAME="local" TABLE_NAME="local" python3 -m pytest tests/unit -v
