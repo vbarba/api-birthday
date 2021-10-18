@@ -1,8 +1,10 @@
 import os
 from unittest import TestCase
-
+import json
 import boto3
 import requests
+from datetime import datetime,timedelta
+
 
 """
 Make sure env variable AWS_SAM_STACK_NAME exists with the name of the stack we are going to test. 
@@ -24,10 +26,7 @@ class TestApiGateway(TestCase):
         return stack_name
 
     def setUp(self) -> None:
-        """
-        Based on the provided env variable AWS_SAM_STACK_NAME,
-        here we use cloudformation API to find out what the HelloWorldApi URL is
-        """
+
         stack_name = TestApiGateway.get_stack_name()
 
         client = boto3.client("cloudformation")
@@ -42,14 +41,19 @@ class TestApiGateway(TestCase):
         stacks = response["Stacks"]
 
         stack_outputs = stacks[0]["Outputs"]
-        api_outputs = [output for output in stack_outputs if output["OutputKey"] == "HelloWorldApi"]
-        self.assertTrue(api_outputs, f"Cannot find output HelloWorldApi in stack {stack_name}")
+        api_outputs = [output for output in stack_outputs if output["OutputKey"] == "ApiBirthdayApi"]
+        self.assertTrue(api_outputs, f"Cannot find output ApiBirthdayApi in stack {stack_name}")
 
         self.api_endpoint = api_outputs[0]["OutputValue"]
 
-    def test_api_gateway(self):
+    def test_api_gateway_put(self):
         """
         Call the API Gateway endpoint and check the response
         """
-        response = requests.get(self.api_endpoint)
-        self.assertDictEqual(response.json(), {"message": "hello world"})
+        tomorrow = datetime.now()+ timedelta(days=-1)
+        response_put = requests.put(self.api_endpoint+'/testuser', data=json.dumps({"dateOfBirth": tomorrow.strftime('%Y-%m-%d')}), headers={"Content-Type": "application/json"})
+        self.assertEqual(response_put.status_code, 200)
+
+    def test_api_gateway_get(self):
+        response_get = requests.get(self.api_endpoint+'/testuser')
+        self.assertDictEqual(response_get.json(), {"message": "Hello, testuser! Your birthday is in 364 day(s)"})
