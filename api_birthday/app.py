@@ -30,6 +30,8 @@ def calculate_days(birthday):
 
 @app.route('/hello/<string:username>', methods=('PUT',))
 def put_hello(username):
+    if not username.isalpha():
+        return jsonify({"message": "Names are made of letters!"}), 403
     birthday = request.json['dateOfBirth']
     now = datetime.now()
     if datetime.strptime(birthday, '%Y-%m-%d') < now:
