@@ -257,7 +257,7 @@ Resources:
                   ProjectName: !Ref CodeBuildProjectIntegrationTest
                   EnvironmentVariables: !Sub |
                     [
-                      {"name": "AWS_SAM_STACK_NAME", "value": "${TestingStackName}"},
+                      {"name": "AWS_SAM_STACK_NAME", "value": "${TestingStackName}"}
                     ]
                 InputArtifacts:
                   - Name: SourceCodeAsZip
