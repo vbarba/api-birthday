@@ -12,7 +12,24 @@ The application uses several AWS resources, including Lambda functions and an AP
 
 The app is a simple 'hello world' app that stores the username date of birth in a database with a PUT request with the following format:
 
+```
+Description: Saves/updates the given user’s name and date of birth in the database.
+Request: PUT /hello/<username> { “dateOfBirth”: “YYYY-MM-DD” }
+Response: 204 No Content
+```
+
 And returns a nice message calculating the days left for the user birthday with a GET request.
+```
+Description: Returns hello birthday message for the given user
+Request: Get /hello/<username>
+Response: 200 OK
+Response Examples:
+A. If username’s birthday is in N days:
+{ “message”: “Hello, <username>! Your birthday is in N day(s)”
+}
+B. If username’s birthday is today:
+{ “message”: “Hello, <username>! Happy birthday!” }
+```
 
 ## Architecture diagram
 
