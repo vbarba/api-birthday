@@ -9,6 +9,7 @@ This project contains source code and supporting files for a serverless applicat
 
 The application uses several AWS resources, including Lambda functions and an API Gateway API. These resources are defined in the `template.yaml` file in this project.
 
+
 The app is a simple 'hello world' app that stores the username date of birth in a database with a PUT request with the following format:
 
 And returns a nice message calculating the days left for the user birthday with a GET request.
@@ -17,6 +18,8 @@ And returns a nice message calculating the days left for the user birthday with 
 
 This is a simple 'hello world' app with a typical serverless architecture. There is a public API Gateway that triggers the lambda function for PUT / GET events.
 The database used is a serverless DynamoDB. All the infrastructure is defined in the `template.yaml' file as IaC.
+
+![image](https://user-images.githubusercontent.com/924020/137930939-65f7ce15-ccd8-4b0f-89d5-e974fa1094c4.png)
 
 ## Deploy
 
@@ -30,31 +33,43 @@ The pipeline have the following stages:
 
 After a commit is pushed to the `main` branch in the repository the pipeline is triggered and the code is downloaded by the AWS Codepipeline service
 
+![Screenshot 2021-10-19 at 16 18 24](https://user-images.githubusercontent.com/924020/137931265-97079247-8e74-45be-914d-dda12ae6e5b3.png)
+
+
 ### UpdatePipeline
 
 As the pipeline is also defined as IaC any change on the pipeline at applied first.
+
+![Screenshot 2021-10-19 at 16 19 24](https://user-images.githubusercontent.com/924020/137931281-fd90bd64-1ec7-4b13-b88b-e885d77890d8.png)
 
 ### UnitTest
 
 The UnitTest are run. You can find it in the `tests/unit` folder.
 
+![Screenshot 2021-10-19 at 16 19 54](https://user-images.githubusercontent.com/924020/137931304-d059e15a-466e-4a99-88f4-b869127bb596.png)
+
 ### BuildAndPackage
 
 The code is build and all the necessary files for deployment are generated
 
-### DeployTest
+![Screenshot 2021-10-19 at 17 04 38](https://user-images.githubusercontent.com/924020/137938351-d17775c1-6d03-4580-8ec7-8b30ee5ca24e.png)
+
+### DeployTest and Integration Test
 
 The code is deployed to the *Test* environment.
 
-### Integration Test
-
 This stage runs the integration test. The purpose of this is test that the integration between the apigateway-lambda-dynamodb works in a AWS environment.
+
+![Screenshot 2021-10-19 at 17 05 02](https://user-images.githubusercontent.com/924020/137938336-9bf84399-bf83-4f3a-b73f-a1ddd708fc8c.png)
+
 
 ### Deploy Prod
 
 The code is deployed to the *Prod* environment. As this is a Lambda substitution there is no interruption. Exists more advanced deployment methods that are described here but out of scope for this project:
 
 https://github.com/aws/serverless-application-model/blob/master/docs/safe_lambda_deployments.rst
+
+![Screenshot 2021-10-19 at 17 05 27](https://user-images.githubusercontent.com/924020/137938307-66013cd7-8d7e-40ce-847e-571291dea9f1.png)
 
 
 ## Use the SAM CLI to build and test locally
