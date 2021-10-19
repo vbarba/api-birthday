@@ -7,7 +7,55 @@ This project contains source code and supporting files for a serverless applicat
 - template.yaml - A template that defines the application's AWS resources.
 - codepipeline.yaml - A template that defines the applications deploy pipeline
 
-The application uses several AWS resources, including Lambda functions and an API Gateway API. These resources are defined in the `template.yaml` file in this project. Y
+The application uses several AWS resources, including Lambda functions and an API Gateway API. These resources are defined in the `template.yaml` file in this project.
+
+The app is a simple 'hello world' app that stores the username date of birth in a database with a PUT request with the following format:
+
+And returns a nice message calculating the days left for the user birthday with a GET request.
+
+## Architecture diagram
+
+This is a simple 'hello world' app with a typical serverless architecture. There is a public API Gateway that triggers the lambda function for PUT / GET events.
+The database used is a serverless DynamoDB. All the infrastructure is defined in the `template.yaml' file as IaC.
+
+## Deploy
+
+The `codepipeline.yaml` template provides a pipeline for CI/CD for this app. It uses the best-practice for Serverless deployments defined here:
+
+https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-generating-example-ci-cd-codepipeline.html
+
+The pipeline have the following stages:
+
+### Source
+
+After a commit is pushed to the `main` branch in the repository the pipeline is triggered and the code is downloaded by the AWS Codepipeline service
+
+### UpdatePipeline
+
+As the pipeline is also defined as IaC any change on the pipeline at applied first.
+
+### UnitTest
+
+The UnitTest are run. You can find it in the `tests/unit` folder.
+
+### BuildAndPackage
+
+The code is build and all the necessary files for deployment are generated
+
+### DeployTest
+
+The code is deployed to the *Test* environment.
+
+### Integration Test
+
+This stage runs the integration test. The purpose of this is test that the integration between the apigateway-lambda-dynamodb works in a AWS environment.
+
+### Deploy Prod
+
+The code is deployed to the *Prod* environment. As this is a Lambda substitution there is no interruption. Exists more advanced deployment methods that are described here but out of scope for this project:
+
+https://github.com/aws/serverless-application-model/blob/master/docs/safe_lambda_deployments.rst
+
 
 ## Use the SAM CLI to build and test locally
 
@@ -42,7 +90,7 @@ api-birthday$ sam logs -n HelloWorldFunction --stack-name api-birthday --tail
 
 You can find more information and examples about filtering Lambda function logs in the [SAM CLI Documentation](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-logging.html).
 
-## Tests
+## Local Unit Tests
 
 Tests are defined in the `tests` folder in this project. Use PIP to install the test dependencies and run tests.
 
@@ -54,9 +102,6 @@ api-birthday$ python -m pytest tests/unit -v
 # Create the env variable AWS_SAM_STACK_NAME with the name of the stack we are testing
 api-birthday$ AWS_SAM_STACK_NAME=<stack-name> python -m pytest tests/integration -v
 ```
-## Deploy
-
-The `codepipeline.yaml` template provides a pipeline for CI/CD for this app. 
 
 ## Cleanup
 
