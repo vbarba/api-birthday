@@ -24,6 +24,7 @@ def calculate_days(birthday):
     now = datetime.now()
     now = now.replace(hour=0, minute=0, second=0, microsecond=0)
     delta1 = (datetime(now.year, birthday.month, birthday.day) - now).days
+    # There is a corner case of users born in a leap year (29 february) that should be handled
     delta2 = (datetime(now.year+1, birthday.month, birthday.day) - now).days
     
     return delta1 if delta1 >= 0 else delta2
